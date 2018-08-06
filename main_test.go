@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestGreet tests that our greeting matches the person's name.
 func TestGreet(t *testing.T) {
 	tests := []struct {
 		arg  string

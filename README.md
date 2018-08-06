@@ -3,7 +3,7 @@ Example end-to-end build, test, and deploy pipelines for Kubernetes, using Googl
 
 # Instructions
 
-If you are new to Google Cloud Build, we recommend you start by visiting the [manage resources page](https://console.cloud.google.com/cloud-resource-manager) in the Cloud Console, [learn how to enable billing](https://cloud.google.com/billing/docs/how-to/modify-project), [enable the Cloud Build API](https://console.cloud.google.com/flows/enableapi?apiid=cloudbuild.googleapis.com), and [install the Cloud SDK](https://cloud.google.com/sdk/docs/).
+If you are new to Google Cloud Build, we recommend you start by visiting the [manage resources page](https://console.cloud.google.com/cloud-resource-manager) in the Cloud Console, [learn how to enable billing](https://cloud.google.com/billing/docs/how-to/modify-project), [enable the Cloud Build API](https://console.cloud.google.com/flows/enableapi?apiid=cloudbuild.googleapis.com), and [install the Cloud SDK](https://cloud.google.com/sdk/docs/). You may also wish to review the [Quickstart for Go](https://cloud.google.com/cloud-build/docs/quickstart-go).
 
 ## Continuous integration testing
 
@@ -18,12 +18,13 @@ To try this out for yourself with a simple Go application which prints a greetin
 * Edit one of the greetings so that the greeting does not match the name.
 * At the bottom of the screen, choose "Create a new branch and start a pull request".  Click "Propose file change".
 * On the page which opens, click "Create pull request".
-* You should see a message: "All checks have failed".  If you wish, you can see the build log by clicking the "Details" button and then selecting the link at the bottom of the screen which says "View more details on Google Cloud Build".
+* You should see a message: "All checks have failed".  If you wish, you can see the build log by clicking the "Details" button and then selecting the link in small print at the bottom of the screen which says "View more details on Google Cloud Build".
 * Next, choose the "Files changed" tab, and click the pencil icon again.
 * Make another edit so that the greetings now match the names.
 * Click the "Commit changes" button at the bottom of the screen.
 * Go back to the "Conversation" tab.
 * You should see that tests pass, and a green check is now returned.
+* Click "Merge pull request" to commit your change to `master`.
 
 ## Automated deployment
 
@@ -43,18 +44,18 @@ gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$CB_SA_E
 Then:
 
 * Visit the [Build Triggers page](https://console.cloud.google.com/cloud-build/triggers) in the Cloud Console.
-* Click "Create Trigger".
+* Click "Create trigger" (if you are new to Cloud Build) or "Add trigger" (if you have existing triggers configured).
 * Choose source GitHub and click Continue.  Follow the authorization flow to grant Google access to your code in GitHub.
 * Choose the `hello-kubernetes` repo, check the consent box, and click Continue.
 * Choose a name for your trigger, e.g. "Deploy to Kubernetes"
 * Under Branch (regex), enter `master`.
 * Under Build configuration, choose "cloudbuild.yaml", and enter filename `deploy.yaml`.
-* Click Save.
-* Now, return to GitHub, and click `main.go` to open the file.
+* Click "Create trigger".
+* Now, return to your fork of `hello-kubernetes` in GitHub, and click `main.go` to open the file on the master branch.
 * Click the pencil icon on the top right-hand corner to edit.
 * On line 16, change the string inside `Greet("...")` to be your name.
 * At the bottom of the page, ensure "Commit directly to the master branch" is selected, and click "Commit changes".
-* A container build, push, and deploy is now running in the background.  This normally takes about 20 seconds.  If you wish you can inspect logs in the [Build History](https://console.cloud.google.com/cloud-build/builds) page in the Cloud Console.
+* A build, push, and deploy is now running in the background.  This normally takes about 20 seconds.  If you wish you can inspect logs in the [Build History](https://console.cloud.google.com/cloud-build/builds) page in the Cloud Console.
 * To see your new code in action, run this command:
 
 ```sh

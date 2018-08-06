@@ -1,4 +1,7 @@
 steps:
+  - name: 'gcr.io/cloud-builders/go'
+    args: [ 'test' ]
+    env: [ 'GOPATH=/workspace' ]
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/hello-kubernetes', '.' ]
   - name: 'gcr.io/cloud-builders/docker'
