@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kaniko-build
+spec:
+  workspaces:
+  - name: source-code
+  params:
+  - name: image
+  results:
+  - name: digest
+  steps:
+  - name: check-auth
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk
+    args: ["gcloud", "auth", "list"]
+  - name: build-and-push
+    image: "gcr.io/kaniko-project/executor:v1.5.1"
+    args: [
+      "--dockerfile=$(workspaces.source-code.path)/Dockerfile",
+      "--context=dir://$(workspaces.source-code.path)",
+      "--destination=$(params.image)",
+      "--digest-file=$(results.digest.path)",
+    ]

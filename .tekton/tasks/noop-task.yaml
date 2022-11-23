@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: noop
+spec:
+  steps:
+  - name: echo
+    image: busybox
+    script: echo hello

@@ -1,0 +1,13 @@
+Before: make sure I've completed GH 2FA
+
+tkn pac bootstrap
+install GH app on repo
+tkn pac create repo
+
+Write pipelinerun using
+https://github.com/lbernick/web-app-demo/blob/main/.tekton/cd-pipelinerun.yaml
+as reference
+
+tkn pac resolve -f .tekton
+
+Open PR containing my changes and look for PipelineRuns on repo.

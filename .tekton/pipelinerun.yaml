@@ -1,0 +1,71 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: hello-kubernetes
+  annotations:
+    # The event we are targeting as seen from the webhook payload
+    # this can be an array too, i.e: [pull_request, push]
+    pipelinesascode.tekton.dev/on-event: "[push]"
+
+    # The branch or tag we are targeting (ie: main, refs/tags/*)
+    pipelinesascode.tekton.dev/on-target-branch: "[main]"
+
+    # Fetch the git-clone task from hub, we are able to reference later on it
+    # with taskRef and it will automatically be embedded into our pipeline.
+    pipelinesascode.tekton.dev/task: "git-clone"
+
+    # Use maven task from hub
+    #
+    pipelinesascode.tekton.dev/task-1: ".tekton/tasks/noop-task.yaml"
+
+    # You can add more tasks by increasing the suffix number, you can specify them as array to have multiple of them.
+    # browse the tasks you want to include from hub on https://hub.tekton.dev/
+    #
+    # pipelinesascode.tekton.dev/task-2: "[curl, buildah]"
+
+    # How many runs we want to keep.
+    # pipelinesascode.tekton.dev/max-keep-runs: "5"
+spec:
+  params:
+    # The variable with brackets are special to Pipelines as Code
+    # They will automatically be expanded with the events from Github.
+    - name: repo_url
+      value: "{{ repo_url }}"
+    - name: revision
+      value: "{{ revision }}"
+  pipelineSpec:
+    params:
+      - name: repo_url
+      - name: revision
+    workspaces:
+      - name: source
+    tasks:
+      - name: fetch-repository
+        taskRef:
+          name: git-clone
+          kind: ClusterTask
+        workspaces:
+          - name: output
+            workspace: source
+        params:
+          - name: url
+            value: $(params.repo_url)
+          - name: revision
+            value: $(params.revision)
+      # Customize this task if you like, or just do a taskRef
+      # to one of the hub task.
+      - name: noop-task
+        runAfter:
+          - fetch-repository
+        taskRef:
+          name: noop-task
+  workspaces:
+  - name: source
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
